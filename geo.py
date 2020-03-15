@@ -22,26 +22,26 @@ class Geo:
     @property
     def lon_degree(self):
         return math.degrees(self._lon)
-    @property.setter
+    @lon_degree.setter
     def lon_degree(self, v):
         self._lon = math.radians(v)
     @property
     def lon(self):
         return self._lon
-    @property.setter
+    @lon.setter
     def lon(self, v):
         self._lon = v
 
     @property
     def lat_degree(self):
         return math.degrees(self._lat)
-    @property.setter
+    @lat_degree.setter
     def lat_degree(self, v):
         self._lat = math.radians(v)
     @property
     def lat(self):
         return self._lat
-    @property.setter
+    @lat.setter
     def lat(self, v):
         self._lat = v
 
