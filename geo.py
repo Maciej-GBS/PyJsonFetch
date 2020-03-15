@@ -1,7 +1,7 @@
 import math
 
 def _hav(a, b):
-    return math.pow(math.sin(0.5 * (b - a)))
+    return math.pow(math.sin(0.5 * (b - a)), 2.0)
 
 class Geo:
     """
@@ -49,3 +49,6 @@ class Geo:
         prod = math.cos(self.lat) * math.cos(other.lat) * _hav(self.lon, other.lon)
         sqrt = math.sqrt(_hav(self.lat, other.lat) + prod)
         return 2 * self.R * math.asin(sqrt)
+
+    def __repr__(self):
+        return str((round(self.lat_degree, 2), round(self.lon_degree, 2)))
