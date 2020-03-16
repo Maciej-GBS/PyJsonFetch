@@ -1,9 +1,10 @@
 """
 Fetches json data, counts user posts, unique post titles, checks user proximity\n
-:imports requests, pandas, geo
+:imports requests, pandas, math, unittest
 """
 import requests
 import pandas as pd
+from solvers import MatrixSolver
 from geo import Geo
 
 def fetch_json(url):
@@ -22,13 +23,16 @@ def make_dataframe(data):
 
 def get_data():
     """
-    Returns dataframes: posts, users in a tuple
+    Returns tuple of posts,users dataframes
     """
     posts = fetch_json('https://jsonplaceholder.typicode.com/posts')
     users = fetch_json('https://jsonplaceholder.typicode.com/users')
     return make_dataframe(posts), make_dataframe(users)
 
 def get_user_post_count(posts, users):
+    """
+    Returns list of strings with usernames and their post counts
+    """
     posts_per_user = posts.loc[:,'userId'].value_counts()
     posts_per_user.name = 'posts_count'
     users = pd.concat([users, posts_per_user], axis=1)
@@ -36,15 +40,25 @@ def get_user_post_count(posts, users):
     return [msg(users.iloc[i,:]) for i in range(0,len(users))]
 
 def get_duplicated_titles(posts):
+    """
+    Returns duplicated titles in posts
+    """
     is_dupl = posts.loc[:,'title'].duplicated()
     return posts.loc[is_dupl, 'title'].to_list()
 
 def get_nearest_users(users):
+    """
+    Returns dict mapping user id to its closest user id
+    """
     address = users.columns.get_loc('address')
     geoloc = users.iloc[:, address]
-    f = lambda i,y: float(geoloc[i]['geo'][y])
+    f = lambda i,label: float(geoloc[i]['geo'][label])
     coords = [{'id':i, 'geo':Geo(f(i,'lat'), f(i,'lng'))} for i in geoloc.index]
-    return coords
+
+    solver = MatrixSolver(lambda x,y: x['geo'].distance(y['geo']))
+    nearest = solver.solve(coords).min()
+
+    return {coords[i]['id']:coords[nearest[i]]['id'] for i in range(0,len(nearest))}
 
 def main():
     posts, users = get_data()

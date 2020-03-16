@@ -1,3 +1,7 @@
+"""
+Contains geographical location object\n
+:imports math
+"""
 import math
 
 def _hav(a, b):
