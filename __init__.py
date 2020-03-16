@@ -62,8 +62,11 @@ def get_nearest_users(users):
 
 def main():
     posts, users = get_data()
+    print("Users post count:")
     print(get_user_post_count(posts, users))
+    print("Duplicated post titles:")
     print(get_duplicated_titles(posts))
+    print("Nearest user:")
     print(get_nearest_users(users))
 
 if __name__ == "__main__":

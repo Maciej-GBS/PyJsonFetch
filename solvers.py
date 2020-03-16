@@ -15,8 +15,13 @@ class MatrixSolver:
         Build solution matrix\n
         Accepts a 1-dimensional list
         """
+        self.matrix = [[0.0 for c in range(0,len(data))] for r in range(0,len(data))]
         elem = lambda i,j: (self.key(data[i], data[j]) if i != j else float('nan'))
-        self.matrix = [[elem(c,r) for c in range(0,len(data))] for r in range(0,len(data))]
+        # Matrix is symmetrical and can be optimized
+        for r in range(0,len(data)):
+            for c in range(r,len(data)):
+                self.matrix[r][c] = elem(c, r)
+                self.matrix[c][r] = self.matrix[r][c]
         return self
 
     def max(self):
