@@ -6,22 +6,26 @@ class MatrixSolver:
     Build relation matrix over data, populating with key_f\n
     key: function converting entry to comparable value
     """
-    def __init__(self, key_f=lambda x,y: x - y):
+    def __init__(self, key_f=(lambda x,y: x-y), symmetry=False):
         self.matrix = []
         self.key = key_f
+        self.symmetry = symmetry
 
     def solve(self, data):
         """
         Build solution matrix\n
         Accepts a 1-dimensional list
         """
-        self.matrix = [[0.0 for c in range(0,len(data))] for r in range(0,len(data))]
         elem = lambda i,j: (self.key(data[i], data[j]) if i != j else float('nan'))
-        # Matrix is symmetrical and can be optimized
-        for r in range(0,len(data)):
-            for c in range(r,len(data)):
-                self.matrix[r][c] = elem(c, r)
-                self.matrix[c][r] = self.matrix[r][c]
+        if self.symmetry:
+            # Matrix is symmetrical and can be optimized
+            self.matrix = [[None for c in range(0,len(data))] for r in range(0,len(data))]
+            for r in range(0,len(data)):
+                for c in range(r,len(data)):
+                    self.matrix[r][c] = elem(r, c)
+                    self.matrix[c][r] = self.matrix[r][c]
+        else:
+            self.matrix = [[elem(r, c) for c in range(0,len(data))] for r in range(0,len(data))]
         return self
 
     def max(self):

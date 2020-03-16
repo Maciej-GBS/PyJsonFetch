@@ -46,12 +46,11 @@ def get_nearest_users(users):
     """
     Returns dict mapping user id to its closest user id
     """
-    address = users.columns.get_loc('address')
-    geoloc = users.iloc[:, address]
+    geoloc = users.loc[:, 'address']
     f = lambda i,label: float(geoloc[i]['geo'][label])
     coords = [{'id':i, 'geo':Geo(f(i,'lat'), f(i,'lng'))} for i in geoloc.index]
 
-    solver = MatrixSolver(lambda x,y: x['geo'].distance(y['geo']))
+    solver = MatrixSolver((lambda x,y: x['geo'].distance(y['geo'])), True)
     nearest = solver.solve(coords).min()
 
     return {coords[i]['id']:coords[nearest[i]]['id'] for i in range(0,len(nearest))}
